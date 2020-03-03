@@ -25,14 +25,14 @@ const orderedPointsArray = [
 // Helper function to ease the process
 function join(point_1, point_2) {
     // line(x1, y1, x2, y2)
-	// draws a line from a point at Normalized screen coordinates x1,y1 to Normalized screen coordinates x2,y2
+    // draws a line from a point at Normalized screen coordinates x1,y1 to Normalized screen coordinates x2,y2
     line(point_1.x, point_1.y, point_2.x, point_2.y);
 }
 
 // First task
 // Just join point to point, you're left with the first and last point join which is done after the for loop
 function draw() {
-	for(var i = 0; i < orderedPointsArray.length - 1; i++) {
+    for (var i = 0; i < orderedPointsArray.length - 1; i++) {
         join(orderedPointsArray[i], orderedPointsArray[i + 1])
     }
 
@@ -48,7 +48,7 @@ function fillArrayWithAnglesFrom(initial_angle, final_angle, polygon_sides_appro
 
     arrayOfAngles.push(init_val);
 
-    for(var i = 0; i < polygon_sides_approx; i++) {
+    for (var i = 0; i < polygon_sides_approx; i++) {
         init_val += degree_stepper;
         arrayOfAngles.push(init_val)
     }
@@ -64,17 +64,17 @@ function getPoint(radius, angle) {
 }
 
 // Draws a circle given a center_point, radius, from_angle to_angle with an approximation of polygon_sides
-function drawCircle(center_point, radius, from_angle, to_angle, polygon_sides_approx=128) {
+function drawCircle(center_point, radius, from_angle, to_angle, polygon_sides_approx = 128) {
     // Fill array of angles of individual points in sequential order
     arrayOfAngles = fillArrayWithAnglesFrom(from_angle, to_angle, polygon_sides_approx);
     var point_1, point_2;
 
-    for(var i = 0; i < arrayOfAngles.length - 1; i++) {
+    for (var i = 0; i < arrayOfAngles.length - 1; i++) {
         // Retrieve point given a radius and its angle
         point_1 = getPoint(radius, arrayOfAngles[i]);
         // Translate point with respect to the center
         point_1.sum(center_point);
-        
+
         // Retrieve next point given a radius and its angle
         point_2 = getPoint(radius, arrayOfAngles[i + 1]);
         // Translate next point with respect to the center
