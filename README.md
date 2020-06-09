@@ -2,21 +2,21 @@
 
 |Assignments|Title|Completed|
 |:-|:-|:-:|
-|1|[Lines and Normalized Screen Coordinates][1]|✅||
-|2|[Basic Transforms][2]|✅|
-|3|[Advanced Transforms][3]|✅|
-|4A|[Parallel Projections][4a]|✅|
-|4B|[Axonometry][4b]|✅|
-|5|[Perspective Projection and View Matrix][5]|✅|
-|6|[World and LookAt View Matrices][6]|✅|
-|7|[Quaternion Rotation][7]|✅|
-|8|[List Strip and Fan][8]|✅|
-|9|[Indexed Primitives][9]|✘|
-|10a|[GLSL lights][10a]|✘|
-|10b|[GLSL BRDF][10b]|✘|
-|11a|[Smooth objects][11a]|✘|
-|11b|[per Pixel and Vertex shading][11b]|✘|
-|12|[Interpolation and animation][12]|✘|
+|1|[Lines and Normalized Screen Coordinates][1]|<ul><li>[x] </li></ul>|
+|2|[Basic Transforms][2]|<ul><li>[x] </li></ul>|
+|3|[Advanced Transforms][3]|<ul><li>[x] </li></ul>|
+|4A|[Parallel Projections][4a]|<ul><li>[x] </li></ul>|
+|4B|[Axonometry][4b]|<ul><li>[x] </li></ul>|
+|5|[Perspective Projection and View Matrix][5]|<ul><li>[x] </li></ul>|
+|6|[World and LookAt View Matrices][6]|<ul><li>[x] </li></ul>|
+|7|[Quaternion Rotation][7]|<ul><li>[x] </li></ul>|
+|8|[List Strip and Fan][8]|<ul><li>[x] </li></ul>|
+|9|[Indexed Primitives][9]|<ul><li>[ ] </li></ul>|
+|10a|[GLSL lights][10a]|<ul><li>[ ] </li></ul>|
+|10b|[GLSL BRDF][10b]|<ul><li>[ ] </li></ul>|
+|11a|[Smooth objects][11a]|<ul><li>[ ] </li></ul>|
+|11b|[per Pixel and Vertex shading][11b]|<ul><li>[ ] </li></ul>|
+|12|[Interpolation and animation][12]|<ul><li>[ ] </li></ul>|
 
 [1]:https://github.com/MattRighetti/computer-graphics/tree/master/A1%20-%20%20Lines%20and%20Normalized%20Screen%20Coordinates
 [2]:https://github.com/MattRighetti/computer-graphics/tree/master/A2%20-%20Basic%20Transforms
