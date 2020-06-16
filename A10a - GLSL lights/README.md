@@ -2,35 +2,34 @@
 
 ## Directional 
 <p align="center">
-![directional](img/directional.png)
+<img src="img/directional.png" height="50">
 </p>
 
 ## Point w/o decay 
 <p align="center">
-![point_no_decay](img/point_decay.png)
+<img src="img/point_decay.png" height="80">
 </p>
 
 ## Directional with ambient
 <p align="center">
-![directional_ambient](img/directional.png)
+<img src="img/directional_ambient.png" height="80">
 </p>
 
 ## Point w/ decay 
 <p align="center">
-![point_decay](img/directional.png)
+<img src="img/point_decay.png" height="80">
 </p>
 
 ## Spotlight with decay 
 <p align="center">
-![spotlight_decay](img/directional.png)
+<img src="img/spot_cone_angles.png" height="180">
+<br>
+<img src="img/spot_cone_lightzone.png" height="180">
+<br>
+<img src="img/spot.png" height="80">
 </p>
 
-## Directional with hemispheric ambient
+## Directional with hemispheric
 <p align="center">
-![directional_hemispheric](img/directional.png)
-</p>
-
-## Three lights: a directional, a point and a spot
-<p align="center">
-![directional](img/directional.png)
+<img src="img/directional_hemispheric.png" height="80">
 </p>

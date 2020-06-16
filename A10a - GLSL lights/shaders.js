@@ -123,11 +123,21 @@ var S7 = `
 
     // LIGHT B
     lightDirB = normalize(LBPos - fs_pos);
-    lightColorB = LBlightColor;
+    float vecModuleB = distance(LBPos, fs_pos);
+    float powerVec = pow(LBTarget/vecModuleB, LBDecay);
+	lightColorB = LBlightColor * powerVec;
     
     // LIGHT C
     lightDirC = normalize(LCPos - fs_pos);
-    lightColorC = 
+    float vecModule = distance(LCPos, fs_pos);
+    float decay = pow(LCTarget/vecModule, LCDecay);
+    float LCConeOutRad = radians(LCConeOut / 2.0);
+    float LCConeInRad = radians((LCConeIn * LCConeOut) / 2.0);
+    float outerCone = cos(LCConeOutRad);
+    float innerCone = cos(LCConeInRad);
+    float coneLightZone = (( dot(lightDirC, LCDir) - outerCone) / (innerCone - outerCone));
+    float clampedConeLightZone = clamp(coneLightZone, 0.0, 1.0);
+    lightColorC = LClightColor * decay * clampedConeLightZone;
 `;
 
 return [S1, S2, S3, S4, S5, S6, S7];
