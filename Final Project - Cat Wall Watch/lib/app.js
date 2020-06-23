@@ -1,6 +1,10 @@
 let canvas;
 var program;
 var gl;
+var positionAttributeLocation;
+var uvAttributeLocation;
+var matrixLocation;
+var textLocation;
 
 var shaderDir;
 var baseDir;
@@ -55,6 +59,11 @@ async function init() {
     var model_dict = await loadModels();
 
     catBodyModel = model_dict['catBody'];
+    eye1Model = model_dict['eye1'];
+    eye2Model = model_dict['eye2'];
+    hand1Model = model_dict['hand1'];
+    hand2Models = model_dict['hand2'];
+    tailModel = model_dict['tail'];
     //###################################################################################
 
     main();
@@ -101,12 +110,17 @@ function main() {
     var catBodyNormals = catBodyModel.vertexNormals;
     var catBodyIndices = catBodyModel.indices;
     var catBodyTexCoords = catBodyModel.textures;
+
+    var tailVertices = tailModel.vertices;
+    var tailNormals = tailModel.vertexNormals;
+    var tailIndices = tailModel.indices;
+    var tailTexCoords = tailModel.textures;
     //###################################################################################
 
-    var positionAttributeLocation = gl.getAttribLocation(program, "a_position");
-    var uvAttributeLocation = gl.getAttribLocation(program, "a_uv");
-    var matrixLocation = gl.getUniformLocation(program, "matrix");
-    var textLocation = gl.getUniformLocation(program, "u_texture");
+    positionAttributeLocation = gl.getAttribLocation(program, "a_position");
+    uvAttributeLocation = gl.getAttribLocation(program, "a_uv");
+    matrixLocation = gl.getUniformLocation(program, "matrix");
+    textLocation = gl.getUniformLocation(program, "u_texture");
 
     var perspectiveMatrix = utils.MakePerspective(120, gl.canvas.width / gl.canvas.height, 0.1, 100.0);
     var viewMatrix = utils.MakeView(0, 0.0, 3.0, 0.0, 0.0);
@@ -114,59 +128,55 @@ function main() {
     var vao = gl.createVertexArray();
     gl.bindVertexArray(vao);
 
-    var positionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(catBodyVertices), gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(positionAttributeLocation);
-    gl.vertexAttribPointer(positionAttributeLocation, 3, gl.FLOAT, false, 0, 0);
-
-    var uvBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(catBodyTexCoords), gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(uvAttributeLocation);
-    gl.vertexAttribPointer(uvAttributeLocation, 2, gl.FLOAT, false, 0, 0);
-
-    var indexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(catBodyIndices), gl.STATIC_DRAW);
+    createPositionBuffer(catBodyVertices);
+    createUvBuffer(catBodyTexCoords);
+    createIndexBuffer(catBodyIndices);
 
     var texture = createTexture(catBodyTexture, gl);
 
     drawScene();
 
-    function animate() {
-        var currentTime = (new Date).getTime();
-        if (lastUpdateTime != null) {
-            var deltaC = (30 * (currentTime - lastUpdateTime)) / 1000.0;
-            Rx += deltaC;
-            Ry -= deltaC;
-            Rz += deltaC;
-        }
-        worldMatrix = utils.MakeWorld(0.0, 0.0, 0.0, Rx, Ry, Rz, S);
-        lastUpdateTime = currentTime;
-    }
-
     function drawScene() {
-        animate();
-
+        worldMatrix = utils.MakeWorld(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 30.0);
         utils.resizeCanvasToDisplaySize(gl.canvas);
         gl.clearColor(0.85, 0.85, 0.85, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
+    
         var viewWorldMatrix = utils.multiplyMatrices(viewMatrix, worldMatrix);
         var projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, viewWorldMatrix);
-
+    
         gl.uniformMatrix4fv(matrixLocation, gl.FALSE, utils.transposeMatrix(projectionMatrix));
-
+    
         gl.activeTexture(gl.TEXTURE0);
         gl.uniform1i(textLocation, texture);
-
+    
         gl.bindVertexArray(vao);
         gl.drawElements(gl.TRIANGLES, catBodyIndices.length, gl.UNSIGNED_SHORT, 0);
-
+    
         window.requestAnimationFrame(drawScene);
     }
+}
 
+function createPositionBuffer(modelVertices) {
+    var positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(modelVertices), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(positionAttributeLocation);
+    gl.vertexAttribPointer(positionAttributeLocation, 3, gl.FLOAT, false, 0, 0);
+}
+
+function createUvBuffer(modelTexCoords) {
+    var uvBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(modelTexCoords), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(uvAttributeLocation);
+    gl.vertexAttribPointer(uvAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+}
+
+function createIndexBuffer(modelIndices) {
+    var indexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(modelIndices), gl.STATIC_DRAW);
 }
 
 function createTexture(url, gl) {
