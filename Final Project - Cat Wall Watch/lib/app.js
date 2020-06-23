@@ -52,11 +52,32 @@ async function init() {
 
     //###################################################################################
     //This loads the obj model in the catBodyModel variable
-    var catBodyObjStr = await utils.get_objstr(baseDir + catBodyStr);
-    catBodyModel = new OBJ.Mesh(catBodyObjStr);
+    var model_dict = await loadModels();
+
+    catBodyModel = model_dict['catBody'];
     //###################################################################################
 
     main();
+}
+
+async function loadModels() {
+    var obj_dict = {};
+    obj_dict['catBody'] = await utils.get_objstr(baseDir + catBodyStr);
+    obj_dict['eye1'] = await utils.get_objstr(baseDir + eyeOneStr);
+    obj_dict['eye2'] = await utils.get_objstr(baseDir + eyeTwoStr);
+    obj_dict['hand1'] = await utils.get_objstr(baseDir + clockHandOneStr);
+    obj_dict['hand2'] = await utils.get_objstr(baseDir + clockHandTwoStr);
+    obj_dict['tail'] = await utils.get_objstr(baseDir + tailStr);
+
+    var model_dict = {};
+    model_dict['catBody'] = new OBJ.Mesh(obj_dict['catBody']);
+    model_dict['eye1'] = new OBJ.Mesh(obj_dict['eye1']);
+    model_dict['eye2'] = new OBJ.Mesh(obj_dict['eye2']);
+    model_dict['hand1'] = new OBJ.Mesh(obj_dict['hand1']);
+    model_dict['hand2'] = new OBJ.Mesh(obj_dict['hand2']);
+    model_dict['tail'] = new OBJ.Mesh(obj_dict['tail']);
+
+    return model_dict;
 }
 
 function main() {
@@ -66,7 +87,7 @@ function main() {
     var Rx = 0.0;
     var Ry = 0.0;
     var Rz = 0.0;
-    var S = 1.0;
+    var S = 30.0;
 
     utils.resizeCanvasToDisplaySize(gl.canvas);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
@@ -109,20 +130,7 @@ function main() {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(catBodyIndices), gl.STATIC_DRAW);
 
-    var texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-
-    var image = new Image();
-    image.src = baseDir + catBodyTexture;
-    console.log(image.src);
-    image.onload = function () {
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.generateMipmap(gl.TEXTURE_2D);
-    };
+    var texture = createTexture(catBodyTexture, gl);
 
     drawScene();
 
@@ -159,6 +167,25 @@ function main() {
         window.requestAnimationFrame(drawScene);
     }
 
+}
+
+function createTexture(url, gl) {
+    var texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+
+    var image = new Image();
+    image.src = baseDir + url;
+
+    image.onload = function () {
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.generateMipmap(gl.TEXTURE_2D);
+    };
+
+    return texture;
 }
 
 window.onload = init;
