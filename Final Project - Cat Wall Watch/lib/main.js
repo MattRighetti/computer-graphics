@@ -150,13 +150,11 @@ class GL {
         this.gl.drawElements(this.gl.TRIANGLES, this.model.getIndices().length, this.gl.UNSIGNED_SHORT, 0);
     }
 
-    drawModel(model) {
+    loadModel(model) {
         this.setModel(model);
         this.createPositionBuffer(model.getVertices());
         this.createUvBuffer(model.getTextureCoord());
         this.createIndexBuffer(model.getIndices());
-        this.drawScene();
-        requestAnimationFrame(this.drawScene);
     }
 
     setModel(model) {
@@ -221,16 +219,34 @@ async function main() {
     console.log("Init catbody");
     await catBody.initModel();
     console.log("Done init catbody");
-    // await tail.initModel();
-    // await clockhand1.initModel();
-    // await clockhand2.initModel();
-    // await eye1.initModel();
-    // await eye2.initModel();
+    await tail.initModel();
+    await clockhand1.initModel();
+    await clockhand2.initModel();
+    await eye1.initModel();
+    await eye2.initModel();
 
     gl.initMainMatrices();
     gl.initVertexArrayObject();
     console.log("Drawing model");
-    gl.drawModel(catBody);
+
+    gl.loadModel(catBody);
+    draw();
+    gl.loadModel(tail);
+    draw();
+    gl.loadModel(eye1);
+    draw();
+    gl.loadModel(eye2);
+    draw();
+    gl.loadModel(clockhand1);
+    draw();
+    gl.loadModel(clockhand2);
+    draw();
+
+    function draw() {
+        gl.drawScene();
+        // window.requestAnimationFrame(draw);
+    }
+
 }
 
 
