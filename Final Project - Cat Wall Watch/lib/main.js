@@ -19,6 +19,8 @@ class GL {
         this.matrixLocation = null;
         this.textLocation = null;
 
+        this.texture = null;
+
         // Main matrices
         this.perspectiveMatrix = null;
         this.viewMatrix = null;
@@ -58,8 +60,8 @@ class GL {
     }
 
     clear(setViewPort=false) {
-        utils.resizeCanvasToDisplaySize(this.gl.canvas);
         if (setViewPort) {
+            utils.resizeCanvasToDisplaySize(this.gl.canvas);
             this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
         }
         this.gl.clearColor(0.85, 0.85, 0.85, 1.0);
@@ -140,6 +142,7 @@ class GL {
     }
 
     drawScene() {
+        this.clear();
         var viewWorldMatrix = utils.multiplyMatrices(this.viewMatrix, this.model.localMatrix);
         var projectionMatrix = utils.multiplyMatrices(this.perspectiveMatrix, viewWorldMatrix);
         console.log("Drawing textures");
@@ -152,9 +155,10 @@ class GL {
 
     loadModel(model) {
         this.setModel(model);
-        this.createPositionBuffer(model.getVertices());
-        this.createUvBuffer(model.getTextureCoord());
-        this.createIndexBuffer(model.getIndices());
+        this.createPositionBuffer(this.model.getVertices());
+        this.createUvBuffer(this.model.getTextureCoord());
+        this.createIndexBuffer(this.model.getIndices());
+        this.createTexture('lib/models/KitCat_color.png');
     }
 
     setModel(model) {
@@ -202,7 +206,7 @@ async function main() {
     gl.initLocation();
 
     // Model Positions
-    var catBodyLocalMatrix = utils.MakeWorld(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 40.0);
+    var catBodyLocalMatrix = utils.MakeWorld(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 50.0);
     var clockHand1LocalMatrix = utils.MakeWorld(0.0, 0.0, 0.029, 0.0, 0.0, 0.0, 40.0);
     var clockHand2LocalMatrix = utils.MakeWorld(0.0, 0.0, 0.028, 0.0, 0.0, 0.0, 40.0);
     var eye1LocalMatrix = utils.MakeWorld(-0.009095, 0.047, 0.018732, 0.0,0.0,0.0,40.0);
@@ -231,20 +235,20 @@ async function main() {
 
     gl.loadModel(catBody);
     draw();
-    gl.loadModel(tail);
-    draw();
-    gl.loadModel(eye1);
-    draw();
-    gl.loadModel(eye2);
-    draw();
-    gl.loadModel(clockhand1);
-    draw();
-    gl.loadModel(clockhand2);
-    draw();
+    // gl.loadModel(tail);
+    // draw();
+    // gl.loadModel(eye1);
+    // draw();
+    // gl.loadModel(eye2);
+    // draw();
+    // gl.loadModel(clockhand1);
+    // draw();
+    // gl.loadModel(clockhand2);
+    // draw();
 
     function draw() {
         gl.drawScene();
-        // window.requestAnimationFrame(draw);
+        window.requestAnimationFrame(draw);
     }
 
 }
