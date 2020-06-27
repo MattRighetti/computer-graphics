@@ -27,6 +27,9 @@ class GL {
 
         // Models container
         this.models = []; 
+
+        this.currentTime = 0.0;
+        this.lastUpdateTime = 0.0;
     }
 
     setProgram() {
@@ -94,7 +97,7 @@ class GL {
 
     initMainMatrices() {
         this.perspectiveMatrix = utils.MakePerspective(120, this.gl.canvas.width / this.gl.canvas.height, 0.1, 100.0);
-        this.viewMatrix = utils.MakeView(0, 0.0, 0.16, 0.0, 0.0);
+        this.viewMatrix = utils.MakeView(0, 0.0, 0.131, 0.0, 0.0);
     }
 
     createPositionBuffer(modelVertices) {
@@ -174,6 +177,8 @@ class GL {
     }
 
     drawModels() {
+        this.animateClockHour();
+        this.animateClockMinutes();
         this.clearOptimized();
         this.models.forEach(model => {
             this.updateModelData(model);
@@ -181,16 +186,22 @@ class GL {
         });
     }
 
-    animate() {
-        var currentTime = (new Date).getTime();
-        if (lastUpdateTime != null) {
-            var deltaC = (30 * (currentTime - lastUpdateTime)) / 1000.0;
-            Rx += deltaC;
-            Ry -= deltaC;
-            Rz += deltaC;
-        }
-        worldMatrix = utils.MakeWorld(0.0, 0.0, 0.0, Rx, Ry, Rz, S);
-        lastUpdateTime = currentTime;
+    // NB: This function is called every time a frame is loadded
+    // this GL program runs more or less at 60FPS
+    animateClockMinutes() {
+        // This is called 60 per second
+        // To make a complete 360° angle we have to wait 60 seconds
+        // Degrees to rotate each call = 6 / 60
+        var rotateMatrix = utils.MakeRotateZMatrix(6.0 / 60.0);
+        this.models[2].localMatrix = utils.multiplyMatrices(this.models[2].localMatrix, rotateMatrix)
+    }
+
+    animateClockHour() {
+        // This is called 60 per second
+        // To make a complete 360° angle we have to wait 60 seconds
+        // Degrees to rotate each hour = 6 / 60 / 60
+        var rotateMatrix = utils.MakeRotateZMatrix(6.0 / 60.0 / 60.0);
+        this.models[3].localMatrix = utils.multiplyMatrices(this.models[3].localMatrix, rotateMatrix)
     }
 }
 
@@ -234,8 +245,8 @@ async function main() {
 
     // Model Positions
     var catBodyLocalMatrix = utils.MakeWorld(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-    var clockHand1LocalMatrix = utils.MakeWorld(0.0, 0.0, 0.019, 0.0, 0.0, 0.0, 1.0);
-    var clockHand2LocalMatrix = utils.MakeWorld(0.0, 0.0, 0.018, 0.0, 0.0, 0.0, 1.0);
+    var clockHand1LocalMatrix = utils.MakeWorld(0.0, 0.0, 0.00111111, 0.0, 0.0, 0.0, 1.0);
+    var clockHand2LocalMatrix = utils.MakeWorld(0.0, 0.0, 0.011, 0.0, 0.0, 0.0, 1.0);
     var eye1LocalMatrix = utils.MakeWorld(-0.009095, 0.047, 0.018732, 0.0,0.0,0.0, 1.0);
     var eye2LocalMatrix = utils.MakeWorld(0.007117, 0.047, 0.018971, 0.0,0.0,0.0, 1.0);
     var tailLocalMatrix = utils.MakeWorld(-0.005182, -0.014557, 0.012112, 0.0,0.0,0.0, 1.0);
