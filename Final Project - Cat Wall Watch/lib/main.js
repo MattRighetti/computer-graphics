@@ -24,6 +24,9 @@ class GL {
         // Main matrices
         this.perspectiveMatrix = null;
         this.viewMatrix = null;
+
+        // Models container
+        this.models = []; 
     }
 
     setProgram() {
@@ -141,30 +144,45 @@ class GL {
         this.texture = texture;
     }
 
-    drawScene() {
-        this.clear();
-        var viewWorldMatrix = utils.multiplyMatrices(this.viewMatrix, this.model.localMatrix);
+    drawScene(model) {
+        var viewWorldMatrix = utils.multiplyMatrices(this.viewMatrix, model.localMatrix);
         var projectionMatrix = utils.multiplyMatrices(this.perspectiveMatrix, viewWorldMatrix);
-        console.log("Drawing textures");
         this.gl.uniformMatrix4fv(this.matrixLocation, this.gl.FALSE, utils.transposeMatrix(projectionMatrix));
         this.gl.uniform1i(this.textLocation, this.texture);
         this.gl.activeTexture(this.gl.TEXTURE0);
         this.gl.bindVertexArray(this.vao);
-        this.gl.drawElements(this.gl.TRIANGLES, this.model.getIndices().length, this.gl.UNSIGNED_SHORT, 0);
+        this.gl.drawElements(this.gl.TRIANGLES, model.getIndices().length, this.gl.UNSIGNED_SHORT, 0, 4);
     }
 
-    loadModel(model) {
-        this.setModel(model);
-        this.createPositionBuffer(this.model.getVertices());
-        this.createUvBuffer(this.model.getTextureCoord());
-        this.createIndexBuffer(this.model.getIndices());
+    updateModelData(model) {
+        this.createPositionBuffer(model.getVertices());
+        this.createUvBuffer(model.getTextureCoord());
+        this.createIndexBuffer(model.getIndices());
+    }
+
+    loadModelInGl(model) {
+        this.models.push(model);
+    }
+
+    initTexture() {
         this.createTexture('lib/models/KitCat_color.png');
     }
 
-    setModel(model) {
-        this.model = model;
+    drawModels() {
+        this.clear();
+        this.models.forEach(model => {
+            this.updateModelData(model);
+            this.drawScene(model);
+        });
     }
 
+    loopDraw() {
+        this.clear();
+        this.models.forEach(model =>{
+            this.drawScene(model); 
+            console.log("Drawing " + model);   
+        })
+    }
 }
 
 class Model {
@@ -220,9 +238,7 @@ async function main() {
     var eye1 = new Model(gl.baseDir + 'lib/models/eye1.obj', eye1LocalMatrix);
     var eye2 = new Model(gl.baseDir + 'lib/models/eye2.obj', eye2LocalMatrix);
 
-    console.log("Init catbody");
     await catBody.initModel();
-    console.log("Done init catbody");
     await tail.initModel();
     await clockhand1.initModel();
     await clockhand2.initModel();
@@ -231,23 +247,23 @@ async function main() {
 
     gl.initMainMatrices();
     gl.initVertexArrayObject();
-    console.log("Drawing model");
 
-    gl.loadModel(catBody);
+    gl.loadModelInGl(catBody);
+    gl.loadModelInGl(tail);
+    gl.loadModelInGl(eye1);
+    gl.loadModelInGl(eye2);
+    gl.loadModelInGl(clockhand1);
+    gl.loadModelInGl(clockhand2);
+
+    gl.initTexture();
+
+    gl.drawModels();
+
     draw();
-    // gl.loadModel(tail);
-    // draw();
-    // gl.loadModel(eye1);
-    // draw();
-    // gl.loadModel(eye2);
-    // draw();
-    // gl.loadModel(clockhand1);
-    // draw();
-    // gl.loadModel(clockhand2);
-    // draw();
 
     function draw() {
-        gl.drawScene();
+        gl.drawModels();
+        // gl.loopDraw();
         window.requestAnimationFrame(draw);
     }
 
