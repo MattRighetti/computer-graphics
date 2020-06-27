@@ -177,13 +177,6 @@ class GL {
             console.log("Drawing");
         });
     }
-
-    loopDraw() {
-        this.clear();
-        this.models.forEach(model =>{
-            this.drawScene(model);  
-        })
-    }
 }
 
 class Model {
@@ -258,13 +251,10 @@ async function main() {
 
     gl.initTexture();
 
-    gl.drawModels();
-
     draw();
 
     function draw() {
         gl.drawModels();
-        // gl.loopDraw();
         window.requestAnimationFrame(draw);
     }
 
