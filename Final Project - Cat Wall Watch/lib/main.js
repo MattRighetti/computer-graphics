@@ -63,13 +63,15 @@ class GL {
     }
 
     clear(setViewPort=false) {
+        utils.resizeCanvasToDisplaySize(this.gl.canvas);
         if (setViewPort) {
-            utils.resizeCanvasToDisplaySize(this.gl.canvas);
             this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
         }
         this.gl.clearColor(0.85, 0.85, 0.85, 1.0);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
-        this.gl.enable(this.gl.DEPTH_TEST);
+        if (setViewPort) {
+            this.gl.enable(this.gl.DEPTH_TEST);
+        }
     }
 
     initLocation() {
@@ -90,7 +92,6 @@ class GL {
     }
 
     createPositionBuffer(modelVertices) {
-        console.log("Created Vertex Buffer");
         // Create buffer
         var positionBuffer = this.gl.createBuffer();
         // Bind to buffer so that every other function call refers to that buffer
@@ -110,7 +111,6 @@ class GL {
     }
 
     createUvBuffer(modelTextCoords) {
-        console.log("Created UVBuffer");
         var uvBuffer = this.gl.createBuffer();
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, uvBuffer);
         this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(modelTextCoords), this.gl.STATIC_DRAW);
@@ -119,7 +119,6 @@ class GL {
     }
 
     createIndexBuffer(modelIndices) {
-        console.log("Created Index Buffer");
         var indexBuffer = this.gl.createBuffer();
         this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
         this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(modelIndices), this.gl.STATIC_DRAW);
@@ -169,18 +168,20 @@ class GL {
     }
 
     drawModels() {
+        
         this.clear();
+
         this.models.forEach(model => {
             this.updateModelData(model);
             this.drawScene(model);
+            console.log("Drawing");
         });
     }
 
     loopDraw() {
         this.clear();
         this.models.forEach(model =>{
-            this.drawScene(model); 
-            console.log("Drawing " + model);   
+            this.drawScene(model);  
         })
     }
 }
