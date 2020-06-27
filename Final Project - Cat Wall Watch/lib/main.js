@@ -74,6 +74,12 @@ class GL {
         }
     }
 
+    clearOptimized() {
+        utils.resizeCanvasToDisplaySize(this.gl.canvas);
+        this.gl.clearColor(0.85, 0.85, 0.85, 1.0);
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+    }
+
     initLocation() {
         this.positionAttributeLocation = this.gl.getAttribLocation(this.program, "a_position");
         this.uvAttributeLocation = this.gl.getAttribLocation(this.program, "a_uv");
@@ -88,7 +94,7 @@ class GL {
 
     initMainMatrices() {
         this.perspectiveMatrix = utils.MakePerspective(120, this.gl.canvas.width / this.gl.canvas.height, 0.1, 100.0);
-        this.viewMatrix = utils.MakeView(0, 0.0, 3.0, 0.0, 0.0);
+        this.viewMatrix = utils.MakeView(0, 0.0, 0.16, 0.0, 0.0);
     }
 
     createPositionBuffer(modelVertices) {
@@ -168,14 +174,23 @@ class GL {
     }
 
     drawModels() {
-        
-        this.clear();
-
+        this.clearOptimized();
         this.models.forEach(model => {
             this.updateModelData(model);
             this.drawScene(model);
-            console.log("Drawing");
         });
+    }
+
+    animate() {
+        var currentTime = (new Date).getTime();
+        if (lastUpdateTime != null) {
+            var deltaC = (30 * (currentTime - lastUpdateTime)) / 1000.0;
+            Rx += deltaC;
+            Ry -= deltaC;
+            Rz += deltaC;
+        }
+        worldMatrix = utils.MakeWorld(0.0, 0.0, 0.0, Rx, Ry, Rz, S);
+        lastUpdateTime = currentTime;
     }
 }
 
@@ -218,12 +233,12 @@ async function main() {
     gl.initLocation();
 
     // Model Positions
-    var catBodyLocalMatrix = utils.MakeWorld(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 50.0);
-    var clockHand1LocalMatrix = utils.MakeWorld(0.0, 0.0, 0.029, 0.0, 0.0, 0.0, 40.0);
-    var clockHand2LocalMatrix = utils.MakeWorld(0.0, 0.0, 0.028, 0.0, 0.0, 0.0, 40.0);
-    var eye1LocalMatrix = utils.MakeWorld(-0.009095, 0.047, 0.018732, 0.0,0.0,0.0,40.0);
-    var eye2LocalMatrix = utils.MakeWorld(0.007117, 0.047, 0.018971, 0.0,0.0,0.0,40.0);
-    var tailLocalMatrix = utils.MakeWorld(-0.005182, -0.014557, 0.012112, 0.0,0.0,0.0,40.0);
+    var catBodyLocalMatrix = utils.MakeWorld(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    var clockHand1LocalMatrix = utils.MakeWorld(0.0, 0.0, 0.019, 0.0, 0.0, 0.0, 1.0);
+    var clockHand2LocalMatrix = utils.MakeWorld(0.0, 0.0, 0.018, 0.0, 0.0, 0.0, 1.0);
+    var eye1LocalMatrix = utils.MakeWorld(-0.009095, 0.047, 0.018732, 0.0,0.0,0.0, 1.0);
+    var eye2LocalMatrix = utils.MakeWorld(0.007117, 0.047, 0.018971, 0.0,0.0,0.0, 1.0);
+    var tailLocalMatrix = utils.MakeWorld(-0.005182, -0.014557, 0.012112, 0.0,0.0,0.0, 1.0);
 
     var catBody = new Model(gl.baseDir + 'lib/models/CatBody.obj', catBodyLocalMatrix);
     var tail = new Model(gl.baseDir + 'lib/models/tail.obj', tailLocalMatrix);
@@ -244,10 +259,10 @@ async function main() {
 
     gl.loadModelInGl(catBody);
     gl.loadModelInGl(tail);
-    gl.loadModelInGl(eye1);
-    gl.loadModelInGl(eye2);
     gl.loadModelInGl(clockhand1);
     gl.loadModelInGl(clockhand2);
+    gl.loadModelInGl(eye1);
+    gl.loadModelInGl(eye2);
 
     gl.initTexture();
 
