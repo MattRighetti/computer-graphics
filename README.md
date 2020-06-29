@@ -13,7 +13,7 @@
 |8|[List Strip and Fan][8]|<ul><li>[x] </li></ul>|
 |9|[Indexed Primitives][9]|<ul><li>[ ] </li></ul>|
 |10a|[GLSL lights][10a]|<ul><li>[x] </li></ul>|
-|10b|[GLSL BRDF][10b]|<ul><li>[ ] </li></ul>|
+|10b|[GLSL BRDF][10b]|<ul><li>[x] </li></ul>|
 |11a|[Smooth objects][11a]|<ul><li>[ ] </li></ul>|
 |11b|[per Pixel and Vertex shading][11b]|<ul><li>[ ] </li></ul>|
 |12|[Interpolation and animation][12]|<ul><li>[ ] </li></ul>|
