@@ -24,15 +24,19 @@ function onKeyDown(event) {
     switch (keyCode) {
         case 68: //d
             keyD = true;
+            gl.onKeyDown(68);
             break;
         case 83: //s
             keyS = true;
+            gl.onKeyDown(83);
             break;
         case 65: //a
             keyA = true;
+            gl.onKeyDown(65);
             break;
         case 87: //w
             keyW = true;
+            gl.onKeyDown(87);
             break;
     }
 }
@@ -83,8 +87,10 @@ var tailLocalMatrix = utils.MakeWorld(-0.005182, -0.014557, 0.012112, 0.0,0.0,0.
 *********************************************************************************************************
 */
 
+var gl;
+
 async function main() {
-    var gl = new GL();
+    gl = new GL();
     gl.setProgram();
     gl.clear(viewport=true);
     gl.initLocation();
@@ -114,6 +120,7 @@ async function main() {
     gl.loadModelInGl(eye2);
 
     gl.initTexture();
+    gl.rotateToCurrentHoursAndMinutes();
 
     draw();
 
@@ -123,6 +130,16 @@ async function main() {
     }
 
 }
+
+/*
+*********************************************************************************************************
+*********************************************************************************************************
+*                                                                                                       *
+*                                              WINDOW OPS                                               *
+*                                                                                                       *
+*********************************************************************************************************
+*********************************************************************************************************
+*/
 
 window.onload = main;
 window.addEventListener("keydown", onKeyDown, false);

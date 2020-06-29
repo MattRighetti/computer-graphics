@@ -28,8 +28,8 @@ class GL {
         // Models container
         this.models = []; 
 
-        this.currentTime = 0.0;
-        this.lastUpdateTime = 0.0;
+        this.currentTime = (new Date).getTime();
+        this.lastUpdateTime = null;
     }
 
     setProgram() {
@@ -96,7 +96,7 @@ class GL {
     }
 
     initMainMatrices() {
-        this.perspectiveMatrix = utils.MakePerspective(120, this.gl.canvas.width / this.gl.canvas.height, 0.1, 100.0);
+        this.perspectiveMatrix = utils.MakePerspective(60, this.gl.canvas.width / this.gl.canvas.height, 0.1, 100.0);
         this.viewMatrix = utils.MakeView(0, 0.0, 0.131, 0.0, 0.0);
     }
 
@@ -133,6 +133,7 @@ class GL {
         this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(modelIndices), this.gl.STATIC_DRAW);
     }
 
+    // I had to pass gl like this because this.gl gave some problems at runtime
     createTexture(url, gl=this.gl) {
         var texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -179,11 +180,54 @@ class GL {
     drawModels() {
         this.animateClockHour();
         this.animateClockMinutes();
+        this.animateTailAndEyes();
         this.clearOptimized();
         this.models.forEach(model => {
             this.updateModelData(model);
             this.drawScene(model);
         });
+    }
+
+    // WSDA Commands
+    onKeyDown(charInt) {
+        switch(charInt) {
+            case 68: //d
+                keyD = true;
+                break;
+            case 83: //s
+                keyS = true;
+                break;
+            case 65: //a
+                keyA = true;
+                break;
+            case 87: //w
+                keyW = true;
+                break;
+        }
+    }
+
+   /*
+    *   Update Methods
+    *   These methods are state changing
+    */
+
+    // CLOCK Animation
+
+    /**
+     * This method positions the hours hand in the correct position when the program 
+     * starts execution
+     */
+    rotateToCurrentHoursAndMinutes() {
+        var minutes = (new Date()).getMinutes();
+        var rotateMatrix = utils.MakeRotateZMatrix(6.0 * minutes);
+        this.models[2].localMatrix = utils.multiplyMatrices(this.models[2].localMatrix, rotateMatrix);
+
+        var hours = (new Date()).getHours();
+        // deltaHours is used to make the position of the hours hand more precise
+        // e.g. ig you have 51 minutes then the hours hand must be closer to the next hour
+        var deltaHours = (30.0 / 60.0) * minutes;
+        var rotateMatrix = utils.MakeRotateZMatrix((30.0 * hours) + deltaHours);
+        this.models[3].localMatrix = utils.multiplyMatrices(this.models[3].localMatrix, rotateMatrix);
     }
 
     // NB: This function is called every time a frame is loadded
@@ -192,15 +236,46 @@ class GL {
         // This is called 60 per second
         // To make a complete 360° angle we have to wait 60 seconds
         // Degrees to rotate each call = 6 / 60
-        var rotateMatrix = utils.MakeRotateZMatrix(6.0 / 60.0);
+        var rotateMatrix = utils.MakeRotateZMatrix(6.0 / 60.0 / 60.0);
         this.models[2].localMatrix = utils.multiplyMatrices(this.models[2].localMatrix, rotateMatrix)
     }
 
     animateClockHour() {
-        // This is called 60 per second
+        // This is called 60 times per second
         // To make a complete 360° angle we have to wait 60 seconds
-        // Degrees to rotate each hour = 6 / 60 / 60
-        var rotateMatrix = utils.MakeRotateZMatrix(6.0 / 60.0 / 60.0);
+        // Degrees to rotate each hour = 6 / 60 / 60 / 60
+        var rotateMatrix = utils.MakeRotateZMatrix(6.0 / 60.0 / 60.0 / 60.0);
         this.models[3].localMatrix = utils.multiplyMatrices(this.models[3].localMatrix, rotateMatrix)
     }
+
+    animateTailAndEyes() {
+        this.currentTime = (new Date()).getTime();
+        var sinTime = Math.sin(this.currentTime  / 1000.0);
+        var rotateMatrix = utils.MakeRotateZMatrix(30.0 * sinTime / 60.0);
+        this.models[1].localMatrix = utils.multiplyMatrices(this.models[1].localMatrix, rotateMatrix)
+
+        rotateMatrix = utils.MakeRotateYMatrix(sinTime);
+        this.models[4].localMatrix = utils.multiplyMatrices(this.models[4].localMatrix, rotateMatrix);
+        this.models[5].localMatrix = utils.multiplyMatrices(this.models[5].localMatrix, rotateMatrix);
+    }
+
+    // WSDA Operations
+    goForward() {
+        // Transformation matrix
+        var goForwardTransformMatrix = utils.MakeTranslateMatrix(0.0, 0.0, 0.01);
+        
+    }
+
+    goBack() {
+        // Transformation matrix
+    }
+
+    goLeft() {
+        // Transformation matrix
+    }
+
+    goRight() {
+        // Transformation matrix
+    }
+
 }
