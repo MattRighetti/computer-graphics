@@ -160,7 +160,7 @@ class GL {
         this.gl.uniform1i(this.textLocation, this.texture);
         this.gl.activeTexture(this.gl.TEXTURE0);
         this.gl.bindVertexArray(this.vao);
-        this.gl.drawElements(this.gl.TRIANGLES, model.getIndices().length, this.gl.UNSIGNED_SHORT, 0, 1);
+        this.gl.drawElements(this.gl.TRIANGLES, model.getIndices().length, this.gl.UNSIGNED_SHORT, 0);
     }
 
     updateModelData(model) {
@@ -186,24 +186,6 @@ class GL {
             this.updateModelData(model);
             this.drawScene(model);
         });
-    }
-
-    // WSDA Commands
-    onKeyDown(charInt) {
-        switch(charInt) {
-            case 68: //d
-                keyD = true;
-                break;
-            case 83: //s
-                keyS = true;
-                break;
-            case 65: //a
-                keyA = true;
-                break;
-            case 87: //w
-                keyW = true;
-                break;
-        }
     }
 
    /****************************************************
