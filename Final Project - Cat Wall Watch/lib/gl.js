@@ -96,7 +96,7 @@ class GL {
     }
 
     initMainMatrices() {
-        this.perspectiveMatrix = utils.MakePerspective(60, this.gl.canvas.width / this.gl.canvas.height, 0.1, 100.0);
+        this.perspectiveMatrix = utils.MakePerspective(60, this.gl.canvas.width / this.gl.canvas.height, 0.01, 100.0);
         this.viewMatrix = utils.MakeView(0, 0.0, 0.131, 0.0, 0.0);
     }
 
@@ -160,7 +160,7 @@ class GL {
         this.gl.uniform1i(this.textLocation, this.texture);
         this.gl.activeTexture(this.gl.TEXTURE0);
         this.gl.bindVertexArray(this.vao);
-        this.gl.drawElements(this.gl.TRIANGLES, model.getIndices().length, this.gl.UNSIGNED_SHORT, 0, 4);
+        this.gl.drawElements(this.gl.TRIANGLES, model.getIndices().length, this.gl.UNSIGNED_SHORT, 0, 1);
     }
 
     updateModelData(model) {
@@ -206,10 +206,10 @@ class GL {
         }
     }
 
-   /*
+   /****************************************************
     *   Update Methods
     *   These methods are state changing
-    */
+    ****************************************************/
 
     // CLOCK Animation
 
@@ -254,28 +254,69 @@ class GL {
         var rotateMatrix = utils.MakeRotateZMatrix(30.0 * sinTime / 60.0);
         this.models[1].localMatrix = utils.multiplyMatrices(this.models[1].localMatrix, rotateMatrix)
 
-        rotateMatrix = utils.MakeRotateYMatrix(sinTime);
+        rotateMatrix = utils.MakeRotateYMatrix(sinTime / 2.0);
         this.models[4].localMatrix = utils.multiplyMatrices(this.models[4].localMatrix, rotateMatrix);
         this.models[5].localMatrix = utils.multiplyMatrices(this.models[5].localMatrix, rotateMatrix);
     }
 
-    // WSDA Operations
+    /****************************************************
+    *   WSDA Methods
+    ****************************************************/
+    
     goForward() {
         // Transformation matrix
-        var goForwardTransformMatrix = utils.MakeTranslateMatrix(0.0, 0.0, 0.01);
-        
+        var goForwardTransformMatrix = utils.MakeTranslateMatrix(0.0, 0.0, 0.001);
+        this.viewMatrix = utils.multiplyMatrices(this.viewMatrix, goForwardTransformMatrix);
     }
 
     goBack() {
         // Transformation matrix
+        var goForwardTransformMatrix = utils.MakeTranslateMatrix(0.0, 0.0, -0.001);
+        this.viewMatrix = utils.multiplyMatrices(this.viewMatrix, goForwardTransformMatrix);
     }
 
     goLeft() {
         // Transformation matrix
+        var goForwardTransformMatrix = utils.MakeTranslateMatrix(0.001, 0.0, 0.0);
+        this.viewMatrix = utils.multiplyMatrices(this.viewMatrix, goForwardTransformMatrix);
     }
 
     goRight() {
         // Transformation matrix
+        var goForwardTransformMatrix = utils.MakeTranslateMatrix(-0.001, 0.0, 0.0);
+        this.viewMatrix = utils.multiplyMatrices(this.viewMatrix, goForwardTransformMatrix);
+    }
+
+    goUp() {
+        // Transformation matrix
+        var goForwardTransformMatrix = utils.MakeTranslateMatrix(0.0, 0.001, 0.0);
+        this.viewMatrix = utils.multiplyMatrices(this.viewMatrix, goForwardTransformMatrix);
+    }
+
+    goDown() {
+        // Transformation matrix
+        var goForwardTransformMatrix = utils.MakeTranslateMatrix(0.0, -0.001, 0.0);
+        this.viewMatrix = utils.multiplyMatrices(this.viewMatrix, goForwardTransformMatrix);
+    }
+
+    lookDown() {
+        var lookDownTransformMatrix = utils.MakeRotateXMatrix(5);
+        this.viewMatrix = utils.multiplyMatrices(this.viewMatrix, lookDownTransformMatrix);
+    }
+
+    lookUp() {
+        var lookDownTransformMatrix = utils.MakeRotateXMatrix(-5);
+        this.viewMatrix = utils.multiplyMatrices(this.viewMatrix, lookDownTransformMatrix);
+    }
+
+    lookRight() {
+        var lookDownTransformMatrix = utils.MakeRotateYMatrix(5);
+        this.viewMatrix = utils.multiplyMatrices(this.viewMatrix, lookDownTransformMatrix);
+    }
+
+    lookLeft() {
+        var lookDownTransformMatrix = utils.MakeRotateYMatrix(-5);
+        this.viewMatrix = utils.multiplyMatrices(this.viewMatrix, lookDownTransformMatrix);
     }
 
 }
