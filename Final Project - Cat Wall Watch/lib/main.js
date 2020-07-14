@@ -8,90 +8,38 @@
 *********************************************************************************************************
 */
 
-var keyW = false;
-var keyA = false;
-var keyS = false;
-var keyD = false;
-var keyQ = false;
-var keyE = false;
-var arrowUp = false;
-var arrowDown = false;
-var arrowLeft = false;
-var arrowRight = false;
-
-// (function () {
-//     var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
-//         window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-//     window.requestAnimationFrame = requestAnimationFrame;
-// })();
-
 function onKeyDown(event) {
     var keyCode = event.keyCode;
     switch (keyCode) {
         case 68: //d
-            keyD = true;
             gl.goRight();
             break;
         case 83: //s
-            keyS = true;
             gl.goBack();
             break;
         case 65: //a
-            keyA = true;
             gl.goLeft();
             break;
         case 87: //w
-            keyW = true;
             gl.goForward();
             break;
         case 81: // q
-            keyQ = true;
             gl.goUp();
             break;
         case 69: // e
-            keyE = true;
             gl.goDown();
             break;
         case 38: // arrowUp
-            keyE = true;
             gl.lookUp();
             break;
         case 40: // arrowDown
-            keyE = true;
             gl.lookDown();
             break;
         case 37: // arrowLeft
-            keyE = true;
             gl.lookLeft();
             break;
         case 39: // arrowRight
-            keyE = true;
             gl.lookRight();
-            break;
-    }
-}
-
-function onKeyUp(event) {
-    var keyCode = event.keyCode;
-
-    switch (keyCode) {
-        case 68: //d
-            keyD = false;
-            break;
-        case 83: //s
-            keyS = false;
-            break;
-        case 65: //a
-            keyA = false;
-            break;
-        case 87: //w
-            keyW = false;
-            break;
-        case 81: // q
-            keyQ = false;
-            break;
-        case 69: // e
-            keyE = false;
             break;
     }
 }
@@ -135,8 +83,8 @@ async function main() {
     var tail = new Model(gl.baseDir + 'lib/models/tail.obj', tailLocalMatrix);
     var clockhand1 = new Model(gl.baseDir + 'lib/models/clockhand1.obj', clockHand1LocalMatrix);
     var clockhand2 = new Model(gl.baseDir + 'lib/models/clockhand2.obj', clockHand2LocalMatrix);
-    var eye1 = new Model(gl.baseDir + 'lib/models/eye1.obj', eye1LocalMatrix);
-    var eye2 = new Model(gl.baseDir + 'lib/models/eye2.obj', eye2LocalMatrix);
+    var eye1 = new Model(gl.baseDir + 'lib/models/eye.obj', eye1LocalMatrix);
+    var eye2 = new Model(gl.baseDir + 'lib/models/eye.obj', eye2LocalMatrix);
 
     await catBody.initModel();
     await tail.initModel();

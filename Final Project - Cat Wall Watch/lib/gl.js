@@ -20,6 +20,8 @@ class GL {
         this.textLocation = null;
 
         this.texture = null;
+        this.black_texture = null;
+        this.white_texture = null;
 
         // Main matrices
         this.perspectiveMatrix = null;
@@ -150,7 +152,27 @@ class GL {
             gl.generateMipmap(gl.TEXTURE_2D);
         };
 
-        this.texture = texture;
+        return texture;
+    }
+
+    // TODO: Fix RGB function
+    createTextureRGB(rgb=[1, 1, 0]) {
+        var texture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+
+        gl.texImage2D(
+            gl.TEXTURE_2D,
+            0,
+            gl.RGBA,
+            1,
+            1,
+            0,
+            gl.RGBA,
+            gl.UNSIGNED_BYTE,
+            new Uint8Array([0, 0, 255, 255])
+        );
+
+        return texture;
     }
 
     drawScene(model) {
@@ -174,7 +196,9 @@ class GL {
     }
 
     initTexture() {
-        this.createTexture('lib/models/KitCat_color.png');
+        this.texture = this.createTexture('lib/models/KitCat_color.png');
+        // TODO: Fix this 1x1 pixel texture function
+        // this.white_texture = this.createTextureRGB();
     }
 
     drawModels() {
@@ -231,7 +255,7 @@ class GL {
     }
 
     animateTailAndEyes() {
-        this.currentTime = (new Date()).getTime();
+        this.currentTime = (new Date).getTime();
         var sinTime = Math.sin(this.currentTime  / 1000.0);
         var rotateMatrix = utils.MakeRotateZMatrix(30.0 * sinTime / 60.0);
         this.models[1].localMatrix = utils.multiplyMatrices(this.models[1].localMatrix, rotateMatrix)
@@ -242,7 +266,31 @@ class GL {
     }
 
     /****************************************************
+    * 
+    *   Color Texture changing
+    * 
+    ****************************************************/
+
+    changeTailColorTo(colorRGBA) {
+
+    }
+
+    changeEyeColorTo(colorRGBA) {
+
+    }
+
+    randomEyeColorChange() {
+
+    }
+
+    randomTailColorChange() {
+        
+    }
+
+    /****************************************************
+    * 
     *   WSDA Methods
+    * 
     ****************************************************/
     
     goForward() {
