@@ -144,33 +144,37 @@ function buildGeometry() {
     var vert4 = [];
 
     // Torus distance from center
-    let R = 2;
+    let R = 1;
     // Torus radius
-    let r = 1;
+    let r = 0.5;
+
+    var theta;
+    var phi;
 
     k = 0;
     for (i = 0; i < 36; i++) {
+        theta = i * 10.0 / 180.0 * Math.PI;
         for (j = 0; j < 36; j++) {
-            x = (R + (r * Math.cos(j * 10.0 / 180.0 * Math.PI))) * Math.cos(i * 10.0 / 180.0 * Math.PI);
-            y = r * Math.sin(i * 10.0 / 180.0 * Math.PI);
-            z = (R + (r * Math.cos(j * 10.0 / 180.0 * Math.PI))) * Math.sin(i * 10.0 / 180.0 * Math.PI);
+            phi = j * 10.0 / 180.0 * Math.PI;
+            x = R * Math.cos(theta) + r * Math.cos(phi) * Math.cos(theta);
+            y = R * Math.sin(theta) + r * Math.cos(phi) * Math.sin(theta);
+            z = r * Math.sin(phi);
             vert4[k++] = [x, y, z];
         }
     }
 
     var ind4 = [];
-
     k = 0;
-    for (i = 0; i < 36; i++) {
-        for (j = 0; j < 36; j++) {
-            ind4[k++] = i + (j - 1) * 36 + 1;
-            ind4[k++] = i + j * 36 + 1;
-            ind4[k++] = (i + 1) % 36 + (j - 1) * 36 + 1;
+    for (i = 0; i < 1296; i++) {
+        ind4[k++] = (i+36) % 1296;
+        ind4[k++] = (i+1) % 1296;
+        ind4[k++] = i;
+    }
 
-            ind4[k++] = (i + 1) % 36 + (j - 1) * 36 + 1;
-            ind4[k++] = i + j * 36 + 1;
-            ind4[k++] = (i + 1) % 36 + j * 36 + 1;
-        }
+    for (j = -1; j < 1295; j++) {
+        ind4[k++] = (j+36) % 1296;
+        ind4[k++] = (j+36+1) % 1296;
+        ind4[k++] = j+1;
     }
 
     var color4 = [1.0, 1.0, 0.0];
