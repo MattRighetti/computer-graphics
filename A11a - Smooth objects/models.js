@@ -128,9 +128,59 @@ function buildGeometry() {
 	addMesh(vert5, norm5, ind5, color5);
 
 	// Draws a Torus -- To do for the assignment.
-	var vert6 = [[-1.0,-1.0,0.0], [1.0,-1.0,0.0], [1.0,1.0,0.0], [-1.0,1.0,0.0]];
-	var norm6 = [[ 0.0, 0.0,1.0], [0.0, 0.0,1.0], [0.0,0.0,1.0], [ 0.0,0.0,1.0]];
-	var ind6 = [0, 1, 2,  0, 2, 3];
+	var vert6 = [];
+	var norm6 = [];
+
+	// Torus distance from center
+    let R = 1;
+    // Torus radius
+    let r = 0.5;
+
+    var theta;
+    var phi;
+
+    k = 0;
+    for (i = 0; i < 36; i++) {
+        theta = i * 10.0 / 180.0 * Math.PI;
+        for (j = 0; j < 36; j++) {
+            phi = j * 10.0 / 180.0 * Math.PI;
+
+            x = R * Math.cos(theta) + r * Math.cos(phi) * Math.cos(theta);
+            y = R * Math.sin(theta) + r * Math.cos(phi) * Math.sin(theta);
+            z = r * Math.sin(phi);
+
+			tx = -Math.sin(theta);
+			ty = Math.cos(theta);
+			tz = 0;
+
+			sx = Math.cos(theta) * (-Math.sin(phi));
+			sy = Math.sin(theta) * (-Math.sin(phi));
+			sz = Math.cos(phi);
+
+			normal_x = ty * sz - tz * sy;
+			normal_y = tz * sx - tx * sz;
+			normal_z = tx * sy - ty * sx;
+
+            vert6[k] = [x, y, z];
+			norm6[k++] = [normal_x, normal_y,normal_z];
+        }
+    }
+
+	k = 0;
+	var ind6 = [];
+
+	for (i = 0; i < 1296; i++) {
+        ind6[k++] = (i+36) % 1296;
+        ind6[k++] = (i+1) % 1296;
+        ind6[k++] = i;
+    }
+
+    for (j = -1; j < 1295; j++) {
+        ind6[k++] = (j+36) % 1296;
+        ind6[k++] = (j+36+1) % 1296;
+        ind6[k++] = j+1;
+    }
+
 	var color6 = [1.0, 0.0, 0.0];
 	addMesh(vert6, norm6, ind6, color6);
 }
