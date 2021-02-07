@@ -71,9 +71,39 @@ function buildGeometry() {
 
 	
 	// Draws a Cone -- To do for the assignment.
-	var vert4 = [[-1.0,-1.0,0.0], [1.0,-1.0,0.0], [1.0,1.0,0.0], [-1.0,1.0,0.0]];
-	var norm4 = [[ 0.0, 0.0,1.0], [0.0, 0.0,1.0], [0.0,0.0,1.0], [ 0.0,0.0,1.0]];
-	var ind4 = [0, 1, 2,  0, 2, 3];
+	var vert4 = [
+        [0.0, 1.0, 0.0]
+    ];
+	var norm4 = [
+		[0.0, 1.0, 0.0]
+	];
+    for (i = 0; i < 36; i++) {
+		// upper normals
+        vert4[i] = [0.0, 1.0, 0.0];
+		norm4[i] = [Math.sin(i * 10.0 / 180.0 * Math.PI), Math.sin(Math.Pi/3), Math.cos(i * 10.0 / 180.0 * Math.PI)];
+		vert4[i+36] = [Math.sin(i*10.0/180.0*Math.PI), -1.0, Math.cos(i*10.0/180.0*Math.PI)];
+		norm4[i+36] = [Math.sin(i*10.0/180.0*Math.PI), Math.sin(Math.PI/3), Math.cos(i*10.0/180.0*Math.PI)];
+		vert4[i+72] = [Math.sin(i*10.0/180.0*Math.PI), -1.0, Math.cos(i*10.0/180.0*Math.PI)];
+		norm4[i+72] = [0.0, -1.0, 0.0];
+    }
+    vert4[108] = [0.0, -1.0, 0.0];
+	norm4[108] = [0.0, -1.0, 0.0];
+
+    ////// Creates indices
+    var ind4 = [];
+    //////// Upper part
+    j = 0;
+    for (i = 0; i < 36; i++) {
+        ind4[j++] = 0;
+        ind4[j++] = i + 36;
+        ind4[j++] = (i + 1) % 36 + 36;
+    }
+    //////// Lower part
+    for (i = 0; i < 36; i++) {
+        ind4[j++] = 108;
+        ind4[j++] = (i + 1) % 36 + 72;
+        ind4[j++] = i + 72;
+    }
 	var color4 = [1.0, 1.0, 0.0];
 	addMesh(vert4, norm4, ind4, color4);
 
