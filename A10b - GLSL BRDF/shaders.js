@@ -122,8 +122,8 @@ var S6 = `
     vec4 ambientVal = ambientLight * ambColor;
 
     // Oren-Nayar with sigma=0.5
-    float theta_i = 1.0 / cos(radians(dot(lightDirA, normalVec)));
-    float theta_r = 1.0 / cos(radians(dot(eyedirVec, normalVec)));
+    float theta_i = acos(dot(lightDirA, normalVec));
+    float theta_r = acos(dot(eyedirVec, normalVec));
     float alpha = max(theta_i, theta_r);
     float beta = min(theta_i, theta_r);
     float sigma = 0.5;
