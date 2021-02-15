@@ -5,8 +5,8 @@
 |1|[Lines and Normalized Screen Coordinates][1]|<ul><li>[x] </li></ul>|
 |2|[Basic Transforms][2]|<ul><li>[x] </li></ul>|
 |3|[Advanced Transforms][3]|<ul><li>[x] </li></ul>|
-|4A|[Parallel Projections][4a]|<ul><li>[x] </li></ul>|
-|4B|[Axonometry][4b]|<ul><li>[x] </li></ul>|
+|4a|[Parallel Projections][4a]|<ul><li>[x] </li></ul>|
+|4b|[Axonometry][4b]|<ul><li>[x] </li></ul>|
 |5|[Perspective Projection and View Matrix][5]|<ul><li>[x] </li></ul>|
 |6|[World and LookAt View Matrices][6]|<ul><li>[x] </li></ul>|
 |7|[Quaternion Rotation][7]|<ul><li>[x] </li></ul>|
